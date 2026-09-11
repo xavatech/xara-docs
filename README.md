@@ -32,7 +32,7 @@ Authorization: Bearer YOUR_API_TOKEN
 `POST https://graph.usexara.ai/rest/CatalogItem/create`
 
 Creates a product in your business catalog. The created product ID can be used
-as `product_id` when creating an invoice.
+as `product_id` on `Payment/initiateInvoice`.
 
 This endpoint requires an `Authorization: Bearer YOUR_API_TOKEN` header.
 
@@ -128,13 +128,13 @@ Success response:
 }
 ```
 
-Use the returned `id` as `product_id` when creating an invoice.
+Use the returned `id` as `product_id` on `Payment/initiateInvoice`.
 
 ### Ticket product vs Ticket
 
 A **ticket product** is a catalog item with `type: "ticket"`. Create it with
 `CatalogItem/create` like any other product, then sell it with
-`Payment/requestInvoice` using that item's `id` as `product_id`. When the
+`Payment/initiateInvoice` using that item's `id` as `product_id`. When the
 invoice is paid, Xara issues a scannable ticket and decrements catalog stock.
 Omit `parent_id` to create a standalone ticket product.
 
@@ -156,7 +156,7 @@ Creates an **event** with one or more pricing tiers. This is not the same as
 `CatalogItem/create` with `type: "ticket"` — that creates a single ticket
 product in the catalog. This endpoint creates the event and then a catalog
 item (ticket product) for each tier so customers can purchase with
-`product_id`.
+`Payment/initiateInvoice`.
 
 This endpoint requires an `Authorization: Bearer YOUR_API_TOKEN` header.
 
@@ -255,16 +255,12 @@ Success response:
 }
 ```
 
-Use a tier's `product_id` with `Payment/requestInvoice` to create an invoice for
-that ticket tier.
+Use a tier's `product_id` with `Payment/initiateInvoice` to create an invoice
+for that ticket tier.
 
 Tier product IDs are also returned by:
 
 `GET https://graph.usexara.ai/rest/Ticket/getTiers?event_slug=EVENT_SLUG`
-
-The previous `POST Ticket/requestInvoice` endpoint is deprecated. It remains
-available for existing integrations, but new integrations should use
-`Payment/requestInvoice` with the tier's `product_id`.
 
 Invalid ticket or tier data returns status `400`. A missing or invalid API
 token returns an authentication error.
@@ -273,33 +269,44 @@ token returns an authentication error.
 
 ## 3. Create an invoice
 
-`POST https://graph.usexara.ai/rest/Payment/requestInvoice`
+`POST https://graph.usexara.ai/rest/Payment/initiateInvoice`
 
-Creates an invoice against a Xara business for the given items and returns a
-reference to track it. This endpoint does not require an API token; the business
-is identified by `business_id` in the request body.
+Creates an invoice for a catalog item (product, service, ticket product, or
+subscription) and sends it to the customer. This endpoint requires an
+`Authorization: Bearer YOUR_API_TOKEN` header. The business is the authenticated
+account.
 
 Request body:
 
-- `phone` (required) — the paying customer's phone number
-- `business_id` (required) — the Xara business receiving the payment
-- `items` (required) — JSON string of `[{ product_id, quantity }]`; each
-  `product_id` is a catalog item that belongs to that business
-- `customer_name` (optional) — derived from the phone if omitted
+- `customerPhoneNumber` (required) — the paying customer's phone number
+- `items` (required) — `[{ product_id, quantity }]`; each `product_id` is a
+  catalog item that belongs to the business. Price, name, and ticket /
+  subscription stamping are taken from the catalog item
+- `customerName` (optional) — derived from the phone if omitted
 - `note` (optional) — free-text note stored on the invoice
-- `delivery_destination_id` (optional) — a delivery destination of the
-  business; its fee is added as a line item
+- `includeVat` (optional) — defaults to the business VAT setting. Set `false`
+  when the invoice total must match an external checkout total
+- `discountType` (optional) — `amount` or `percentage`
+- `discountValue` (required when `discountType` is set)
+- `partialPaymentType` (optional) — `amount` or `percentage` (minimum upfront)
+- `partialPaymentValue` (required when `partialPaymentType` is set)
+- `deliveryEta` (optional)
+- `delivery_address` (optional) — `{ address, city?, state?, label? }` so the
+  customer's checkout address is stored on the invoice
 
 Example request:
 
-```json
-{
-  "phone": "2348012345678",
-  "business_id": "42",
-  "customer_name": "Ada Lovelace",
-  "items": "[{ \"product_id\": 128, \"quantity\": 1 }]",
-  "note": "Order #ORD-1042"
-}
+```bash
+curl --request POST \
+  --url https://graph.usexara.ai/rest/Payment/initiateInvoice \
+  --header "Authorization: Bearer YOUR_API_TOKEN" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "customerPhoneNumber": "2348012345678",
+    "customerName": "Ada Lovelace",
+    "items": [{ "product_id": 128, "quantity": 1 }],
+    "note": "Order #ORD-1042"
+  }'
 ```
 
 Success response (`data`):
@@ -307,32 +314,29 @@ Success response (`data`):
 ```json
 {
   "reference": "INV-…",
+  "invoice_type": "sale",
+  "payment_method": "request",
+  "status": "initiated",
   "amount": 12345,
   "subtotal": 11000,
+  "discount": 0,
   "vat": 825,
   "vat_percentage": 7.5,
-  "delivery_fee": 0,
-  "delivery_destination": null,
+  "min_upfront_amount": null,
   "items": [
     {
-      "name": "Premium package",
+      "description": "Premium package",
       "quantity": 1,
-      "unit_price": 11000,
-      "total": 11000
+      "amount": 11000
     }
-  ]
+  ],
+  "stock_warnings": []
 }
 ```
 
 Store the returned `reference` — it is how the payment webhook is matched back
 to your record. Non-`200` responses return `{ "message": "…" }` describing the
 problem.
-
-External carts (WooCommerce, custom storefronts) should use the authenticated
-`Payment/initiateInvoice` endpoint with ad-hoc line items and `includeVat: false`
-so the invoice total matches the checkout total. Pass `delivery_address`
-(`address`, optional `city` / `state` / `label`) so the customer's checkout
-address is stored on the invoice.
 
 ---
 
