@@ -1,0 +1,302 @@
+@theme static {
+  --font-sans: 'Plus Jakarta Sans', Inter, ui-sans-serif, system-ui, sans-serif;
+  --color-xara-50: #eefaf4;
+  --color-xara-100: #d7f4e5;
+  --color-xara-200: #b1e8cf;
+  --color-xara-300: #7ed5b2;
+  --color-xara-400: #47bd90;
+  --color-xara-500: #0b9c5e;
+  --color-xara-600: #087d4d;
+  --color-xara-700: #08633f;
+  --color-xara-800: #075035;
+  --color-xara-900: #063f2b;
+  --color-xara-950: #022419;
+}
+
+:root {
+  --ui-primary: var(--color-xara-500);
+  --ui-radius: 0.625rem;
+  --ui-container: 100rem;
+  --ui-header-height: 5rem;
+  --ui-text-dimmed: #899890;
+  --ui-text-muted: #71847b;
+  --ui-text-toned: #52685f;
+  --ui-text: #42564d;
+  --ui-text-highlighted: #20382e;
+  --ui-bg: #fbfdfc;
+  --ui-bg-muted: #f2f7f4;
+  --ui-bg-elevated: #eaf4ef;
+  --ui-bg-accented: #dceee5;
+  --ui-border: #e3e7e5;
+  --ui-border-muted: #e8ecea;
+  --ui-border-accented: #cfe7dc;
+  --xara-ink: #24473a;
+  --xara-muted: #60756d;
+  --xara-border: #dce6e1;
+  --xara-code: #091936;
+}
+
+.dark {
+  --ui-primary: var(--color-xara-400);
+  --ui-text-dimmed: #718079;
+  --ui-text-muted: #93a19a;
+  --ui-text-toned: #b0bbb6;
+  --ui-text: #cdd6d2;
+  --ui-text-highlighted: #f2f6f4;
+  --ui-bg: #111613;
+  --ui-bg-muted: #171e1a;
+  --ui-bg-elevated: #1d2621;
+  --ui-bg-accented: #26332c;
+  --ui-border: #2b3731;
+  --ui-border-muted: #242e29;
+  --ui-border-accented: #34483e;
+  --xara-ink: #f1f6f3;
+  --xara-muted: #aebbb4;
+  --xara-border: #2d3d35;
+  --xara-code: #080d0b;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+  background-color: #fbfdfc;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.34), rgba(251, 253, 252, 0.58)),
+    url('/images/dashboard-hero-bg.webp');
+  background-position: center top;
+  background-repeat: repeat-y;
+  background-size: max(1280px, 100%) auto;
+  color: var(--xara-muted);
+  letter-spacing: -0.018em;
+}
+
+.dark body {
+  background-color: #111613;
+  background-image:
+    linear-gradient(rgba(17, 22, 19, 0.93), rgba(17, 22, 19, 0.96)),
+    url('/images/dashboard-hero-bg.webp');
+  background-position: center top;
+  background-repeat: repeat-y;
+  background-size: max(1280px, 100%) auto;
+}
+
+body header {
+  border-color: rgba(227, 231, 229, 0.85) !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+.dark header {
+  border-color: rgba(52, 72, 62, 0.9) !important;
+  background: rgba(17, 22, 19, 0.92) !important;
+}
+
+.xara-dashboard-cta {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  background:
+    repeating-linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.11) 0,
+      rgba(255, 255, 255, 0.11) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    #0b9c5e;
+  box-shadow:
+    inset 4px 4px 11.3px rgba(255, 255, 255, 0.25),
+    inset -4px -4px 11.3px rgba(4, 83, 47, 0.14);
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: -0.35px;
+  line-height: 1.25rem;
+  text-decoration: none;
+  text-shadow: 1px 1px 24px rgba(0, 0, 0, 0.1);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.xara-dashboard-cta:hover {
+  transform: translateY(-2px);
+}
+
+main > div > [data-slot='root']:has(> aside[data-slot='left']),
+main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] {
+  min-width: 0;
+}
+
+main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'],
+main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] > [data-slot='center'],
+main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] > [data-slot='right'] {
+  min-width: 0 !important;
+}
+
+.xara-api-panel {
+  position: sticky;
+  top: calc(var(--ui-header-height) + 1.5rem);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(86, 113, 101, 0.35);
+  border-radius: 0.875rem;
+  background: var(--xara-code);
+  color: #e8f0ec;
+  box-shadow: 0 18px 50px rgba(9, 25, 54, 0.16);
+  contain: inline-size;
+}
+
+.xara-api-panel ::selection { background: rgba(71, 189, 144, 0.35); }
+
+.xara-api-panel pre {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  max-height: min(58vh, 680px);
+  overflow: auto;
+  padding: 1.1rem 1.15rem 1.35rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 0.76rem;
+  line-height: 1.75;
+  letter-spacing: -0.02em;
+  white-space: pre;
+}
+
+.xara-api-panel pre code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  color: #e8f0ec;
+}
+
+.xara-api-panel button {
+  color: #b7c7bf;
+}
+
+.xara-api-panel button[aria-selected='true'] {
+  color: #ffffff;
+}
+
+.xara-api-panel pre::-webkit-scrollbar { width: 8px; height: 8px; }
+.xara-api-panel pre::-webkit-scrollbar-thumb {
+  border: 2px solid var(--xara-code);
+  border-radius: 999px;
+  background: #3a4a42;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+h1,
+h2,
+h3 {
+  color: var(--xara-ink);
+  letter-spacing: -0.035em;
+}
+
+.prose p,
+.prose li { color: var(--xara-muted); }
+.prose table { font-size: 0.9rem; }
+
+.prose img[src^='/images/docs/'] {
+  width: 100%;
+  margin-block: 1.25rem 0.5rem;
+  border: 1px solid #e3e7e5;
+  border-radius: 0.875rem;
+  background: #ffffff;
+  box-shadow: 0 16px 42px rgba(32, 71, 58, 0.09);
+}
+
+.dark .prose img[src^='/images/docs/'] {
+  border-color: #294238;
+}
+
+.prose a:not([class]) {
+  color: #0b9c5e;
+}
+
+@media (min-width: 1024px) {
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) {
+    display: grid !important;
+    grid-template-columns: 180px minmax(0, 1fr) !important;
+    gap: 1.5rem !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='left'] {
+    grid-column: 1 !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] {
+    grid-column: 2 !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.82fr) !important;
+    align-items: start;
+    gap: 1.5rem !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] > [data-slot='center'] {
+    width: 100% !important;
+    grid-column: 1 !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] > [data-slot='right'] {
+    width: 100% !important;
+    grid-column: 2 !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) {
+    grid-template-columns: 210px minmax(0, 1fr) !important;
+    gap: 2rem !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] {
+    display: grid !important;
+    grid-template-columns: minmax(520px, 1fr) minmax(390px, 0.76fr) !important;
+    align-items: start;
+    gap: 2rem !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] > [data-slot='center'] {
+    grid-column: 1 !important;
+  }
+
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] > [data-slot='right'] {
+    grid-column: 2 !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  main > div > [data-slot='root']:has(> aside[data-slot='left']) > [data-slot='center'] > [data-slot='root'] > [data-slot='right'] {
+    order: 9999 !important;
+  }
+
+  .xara-api-panel {
+    position: relative;
+    top: auto;
+    margin-top: 2rem;
+  }
+
+  .xara-api-panel pre { max-height: 480px; }
+}
+
+@media (max-width: 639px) {
+  .xara-dashboard-cta {
+    min-height: 34px;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.75rem;
+  }
+}

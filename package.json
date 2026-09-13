@@ -1,0 +1,16 @@
+{
+  "name": "xara-api-doc",
+  "description": "Developer documentation for the Xara Business API",
+  "private": true,
+  "packageManager": "pnpm@10.28.1",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview"
+  },
+  "dependencies": {
+    "docus": "latest",
+    "better-sqlite3": "^12.11.1",
+    "nuxt": "^4.4.8"
+  }
+}
