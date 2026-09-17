@@ -20,6 +20,8 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
             cd /var/xara/xara-docs
             git pull
-            yarn cache clean && yarn install
+            corepack enable
+            corepack prepare yarn@4.9.2 --activate
+            yarn install --immutable
             yarn build
             pm2 reload ecosystem.config.cjs
