@@ -25,35 +25,37 @@ export const apiExamples: Record<string, ApiExample> = {
   '/getting-started/quickstart': {
     eyebrow: 'Step 2 · Request payment',
     method: 'POST',
-    path: '/Payment/requestInvoice',
+    path: '/Payment/initiateInvoice',
     summary: 'Create an invoice for a product in your Xara business.',
     requests: [
       {
         label: 'cURL',
         language: 'bash',
         code: String.raw`curl --request POST \
-  --url ${baseUrl}/Payment/requestInvoice \
+  --url ${baseUrl}/Payment/initiateInvoice \
+  --header "Authorization: Bearer YOUR_API_TOKEN" \
   --header "Content-Type: application/json" \
   --data '{
-    "phone": "2348012345678",
-    "business_id": "42",
-    "items": "[{\"product_id\":128,\"quantity\":1}]"
+    "customerPhoneNumber": "2348012345678",
+    "items": [{ "product_id": 128, "quantity": 1 }]
   }'`,
       },
       {
         label: 'JavaScript',
         language: 'javascript',
         code: `const response = await fetch(
-  '${baseUrl}/Payment/requestInvoice',
+  '${baseUrl}/Payment/initiateInvoice',
   {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: 'Bearer YOUR_API_TOKEN',
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
-      phone: '2348012345678',
-      business_id: '42',
-      items: JSON.stringify([
+      customerPhoneNumber: '2348012345678',
+      items: [
         { product_id: 128, quantity: 1 }
-      ])
+      ]
     })
   }
 )
@@ -67,12 +69,16 @@ const invoice = await response.json()`,
         status: 'Success response',
         code: `{
   "reference": "INV-…",
+  "invoice_type": "sale",
+  "payment_method": "request",
+  "status": "initiated",
   "amount": 12345,
   "subtotal": 11000,
+  "discount": 0,
   "vat": 825,
   "vat_percentage": 7.5,
-  "delivery_fee": 0,
-  "delivery_destination": null
+  "min_upfront_amount": null,
+  "stock_warnings": []
 }`,
       },
     ],
@@ -336,20 +342,20 @@ $response = $client->get(
   '/api-reference/invoices': {
     eyebrow: 'Invoices',
     method: 'POST',
-    path: '/Payment/requestInvoice',
+    path: '/Payment/initiateInvoice',
     summary: 'Create an invoice and store its reference so you can match the payment.',
     requests: [
       {
         label: 'cURL',
         language: 'bash',
         code: String.raw`curl --request POST \
-  --url ${baseUrl}/Payment/requestInvoice \
+  --url ${baseUrl}/Payment/initiateInvoice \
+  --header "Authorization: Bearer YOUR_API_TOKEN" \
   --header "Content-Type: application/json" \
   --data '{
-    "phone": "2348012345678",
-    "business_id": "42",
-    "customer_name": "Ada Lovelace",
-    "items": "[{\"product_id\":128,\"quantity\":1}]",
+    "customerPhoneNumber": "2348012345678",
+    "customerName": "Ada Lovelace",
+    "items": [{ "product_id": 128, "quantity": 1 }],
     "note": "Order #ORD-1042"
   }'`,
       },
@@ -357,17 +363,19 @@ $response = $client->get(
         label: 'JavaScript',
         language: 'javascript',
         code: `const response = await fetch(
-  '${baseUrl}/Payment/requestInvoice',
+  '${baseUrl}/Payment/initiateInvoice',
   {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: 'Bearer YOUR_API_TOKEN',
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
-      phone: '2348012345678',
-      business_id: '42',
-      customer_name: 'Ada Lovelace',
-      items: JSON.stringify([
+      customerPhoneNumber: '2348012345678',
+      customerName: 'Ada Lovelace',
+      items: [
         { product_id: 128, quantity: 1 }
-      ]),
+      ],
       note: 'Order #ORD-1042'
     })
   }
@@ -379,14 +387,20 @@ $response = $client->get(
         code: `$client = new GuzzleHttp\\Client();
 
 $response = $client->post(
-  '${baseUrl}/Payment/requestInvoice',
-  ['json' => [
-    'phone' => '2348012345678',
-    'business_id' => '42',
-    'items' => json_encode([
+  '${baseUrl}/Payment/initiateInvoice',
+  [
+    'headers' => [
+      'Authorization' => 'Bearer YOUR_API_TOKEN'
+    ],
+    'json' => [
+      'customerPhoneNumber' => '2348012345678',
+      'customerName' => 'Ada Lovelace',
+      'items' => [
       ['product_id' => 128, 'quantity' => 1]
-    ])
-  ]]
+      ],
+      'note' => 'Order #ORD-1042'
+    ]
+  ]
 );`,
       },
     ],
@@ -396,20 +410,23 @@ $response = $client->post(
         status: '200 OK',
         code: `{
   "reference": "INV-…",
+  "invoice_type": "sale",
+  "payment_method": "request",
+  "status": "initiated",
   "amount": 12345,
   "subtotal": 11000,
+  "discount": 0,
   "vat": 825,
   "vat_percentage": 7.5,
-  "delivery_fee": 0,
-  "delivery_destination": null,
+  "min_upfront_amount": null,
   "items": [
     {
-      "name": "Premium package",
+      "description": "Premium package",
       "quantity": 1,
-      "unit_price": 11000,
-      "total": 11000
+      "amount": 11000
     }
-  ]
+  ],
+  "stock_warnings": []
 }`,
       },
       {
