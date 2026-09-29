@@ -1,6 +1,12 @@
 export default defineNuxtConfig({
   extends: ['docus'],
   routeRules: {
+    '/resources/faq': {
+      redirect: {
+        to: 'https://usexara.ai/business/pay-with-xara#faqs',
+        statusCode: 302,
+      },
+    },
     '/': {
       redirect: {
         to: '/getting-started/overview',

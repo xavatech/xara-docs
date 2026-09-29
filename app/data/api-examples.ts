@@ -161,6 +161,7 @@ $response = $client->get(
   --header "Content-Type: application/json" \
   --data '{
     "name": "Premium package",
+    "type": "product",
     "price": 11000,
     "quantity": 25,
     "description": "Premium product package",
@@ -180,6 +181,7 @@ $response = $client->get(
     },
     body: JSON.stringify({
       name: 'Premium package',
+      type: 'product',
       price: 11000,
       quantity: 25,
       min_stock: 5
