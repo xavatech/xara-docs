@@ -2,11 +2,11 @@ export default defineAppConfig({
   header: {
     title: 'Xara Business API',
     logo: {
-      light: '/logo/xara-business-green.png',
-      dark: '/logo/xara-business-green-dark.png',
+      light: '/logo/xara-business.png',
+      dark: '/logo/xara-business.png',
       favicon: '/favicon.ico',
       alt: 'Xara Business API',
-      class: 'h-[24px] w-auto',
+      class: 'xara-header-logo',
     },
   },
   seo: {
@@ -20,7 +20,7 @@ export default defineAppConfig({
       organization: {
         name: 'Xara',
         url: 'https://usexara.ai',
-        logo: '/logo/xara-business-green.png',
+        logo: '/logo/xara-business.png',
       },
     },
   },
