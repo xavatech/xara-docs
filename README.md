@@ -43,7 +43,7 @@ Request body:
   `type: "ticket"` which also allows `0` (a free ticket)
 - `quantity` (optional) — available stock; defaults to `0`
 - `description` (optional) — product description
-- `min_stock` (optional) — low-stock threshold
+- `min_stock` (optional) — low-stock threshold; when unset, alerts default to `1`, and `0` disables low-stock alerts for the item
 - `cost_price` (optional) — internal cost price; must be `0` or greater
 - `picture` (optional) — file name of an image uploaded beforehand
 - `parent_id` (optional) — ID of a parent product when creating a variant
