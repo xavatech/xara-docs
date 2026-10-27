@@ -55,7 +55,7 @@ No other origins, no CDN fonts, no iframes.
 ```ts
 import { connect, inXara, mockApp } from "@xavatech/xara-game-sdk";
 
-if (import.meta.env.DEV && !inXara()) {
+if (!inXara()) {
   mockApp({
     players: [
       { id: 1, name: "Ada" },
@@ -71,7 +71,7 @@ xara.onChange(draw);
 draw(await xara.load());
 ```
 
-`mockApp` is for the browser during development. It is not part of the build the app opens.
+`mockApp` runs only outside the app. It adds a bar that switches which player's phone the page is, and a move only goes through on that player's turn. Inside the app it never runs.
 
 ## Draw and play
 
@@ -130,6 +130,6 @@ Use the names above. These older names are not the SDK: `ready`, `onState`, `vie
 
 ## What to tell the user
 
-The built `dist/` is a static site. It has to be served over https on one origin. They submit that URL in the Xara business dashboard with the player counts and SDK version `2.0.0`. The game stays in review until an admin approves it. Changing the URL or the player counts after approval sends it back to review. Changing the name, description, or icon does not.
+The built `dist/` is a static site. It has to be served over https on one origin. They submit that URL in the Xara business dashboard with the player counts and SDK version `2.1.0`. The game stays in review until an admin approves it. Changing the URL or the player counts after approval sends it back to review. Changing the name, description, or icon does not.
 
 Do not submit, host, or publish the package unless the user asks.
